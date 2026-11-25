@@ -7,6 +7,37 @@
   margin-inline: auto;
 }
 
+/*
+ * Esmaecimento nas pontas de uma lista rolável (HorizontalScroller).
+ * O próprio conteúdo some aos poucos (máscara), sem pintar nada por cima do fundo.
+ * As larguras são propriedades registradas (@property) para a máscara poder animar
+ * quando a ponta aparece ou some.
+ */
+@property --edge-fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --edge-fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@utility edge-fade-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--edge-fade-start),
+    #000 calc(100% - var(--edge-fade-end)),
+    transparent 100%
+  );
+  transition:
+    --edge-fade-start 400ms ease,
+    --edge-fade-end 400ms ease;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

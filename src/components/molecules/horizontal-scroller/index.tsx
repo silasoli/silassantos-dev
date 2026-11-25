@@ -15,8 +15,8 @@ export interface HorizontalScrollerProps {
 }
 
 /**
- * Lista com rolagem horizontal no estilo do layout da marca: sem barra de rolagem visível, com
- * esmaecimento escuro nas pontas que ainda têm conteúdo e setas "»" verdes para avançar.
+ * Lista com rolagem horizontal no estilo do layout da marca: sem barra de rolagem visível, com o
+ * conteúdo esmaecendo nas pontas que ainda têm mais itens e setas "»" para avançar.
  * Continua rolável por toque, trackpad e teclado (a lista recebe foco).
  */
 export function HorizontalScroller({
@@ -36,15 +36,15 @@ export function HorizontalScroller({
         tabIndex={0}
         aria-label={label}
         className={cn(
-          'grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'edge-fade-mask grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          // Largura do esmaecimento em cada ponta: aparece só onde ainda há conteúdo
+          canScrollStart ? '[--edge-fade-start:clamp(32px,9vw,120px)]' : '[--edge-fade-start:0px]',
+          canScrollEnd ? '[--edge-fade-end:clamp(32px,9vw,120px)]' : '[--edge-fade-end:0px]',
           listClassName,
         )}
       >
         {children}
       </ol>
-
-      <EdgeFade side="start" visible={canScrollStart} />
-      <EdgeFade side="end" visible={canScrollEnd} />
 
       <ScrollArrow
         side="start"
@@ -62,19 +62,6 @@ export function HorizontalScroller({
   )
 }
 
-function EdgeFade({ side, visible }: { side: 'start' | 'end'; visible: boolean }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={cn(
-        'pointer-events-none absolute inset-y-0 w-[clamp(40px,14vw,220px)] from-transparent to-surface transition-opacity duration-300',
-        side === 'end' ? 'right-0 bg-linear-to-r' : 'left-0 bg-linear-to-l',
-        visible ? 'opacity-100' : 'opacity-0',
-      )}
-    />
-  )
-}
-
 interface ScrollArrowProps {
   side: 'start' | 'end'
   visible: boolean
@@ -83,23 +70,39 @@ interface ScrollArrowProps {
 }
 
 function ScrollArrow({ side, visible, controls, onClick }: ScrollArrowProps) {
-  const Icon = side === 'end' ? ChevronsRight : ChevronsLeft
+  const isEnd = side === 'end'
+  const Icon = isEnd ? ChevronsRight : ChevronsLeft
+
   return (
     <button
       type="button"
       onClick={onClick}
       aria-controls={controls}
-      aria-label={side === 'end' ? 'Ver próximos' : 'Ver anteriores'}
-      // Some quando não há mais para onde rolar, mas sai da ordem do Tab em vez de sumir do DOM
+      aria-label={isEnd ? 'Ver próximos' : 'Ver anteriores'}
+      // Quando some, sai da ordem do Tab e dos leitores de tela, mas continua no DOM para animar
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       className={cn(
-        'absolute top-[34%] grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-brand transition-[opacity,transform] duration-300 hover:scale-110',
-        side === 'end' ? 'right-2 md:right-4' : 'left-2 md:left-4',
-        visible ? 'opacity-100' : 'pointer-events-none opacity-0',
+        'group absolute top-[38%] grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-brand shadow-float',
+        'transition-[opacity,translate,scale,background-color] duration-300 ease-out',
+        'hover:scale-105 hover:bg-surface-raised active:scale-95',
+        isEnd ? 'right-1 md:-right-6' : 'left-1 md:-left-6',
+        // Entra deslizando a partir da ponta da lista; sai do mesmo jeito
+        visible
+          ? '-translate-y-1/2 opacity-100'
+          : cn(
+              'pointer-events-none -translate-y-1/2 opacity-0',
+              isEnd ? 'translate-x-3' : '-translate-x-3',
+            ),
       )}
     >
-      <Icon className="size-8" strokeWidth={2.75} />
+      <Icon
+        strokeWidth={2.5}
+        className={cn(
+          'size-6 transition-transform duration-300 ease-out',
+          isEnd ? 'group-hover:translate-x-0.5' : 'group-hover:-translate-x-0.5',
+        )}
+      />
     </button>
   )
 }
