@@ -29,42 +29,93 @@ export function HorizontalScroller({
   className,
 }: HorizontalScrollerProps) {
   const listId = useId()
-  const { ref, canScrollStart, canScrollEnd, isDragging, scrollByPage, dragHandlers } =
-    useCarousel<HTMLOListElement>()
+  const {
+    ref,
+    canScrollStart,
+    canScrollEnd,
+    isDragging,
+    stops,
+    activeIndex,
+    scrollByPage,
+    scrollToIndex,
+    dragHandlers,
+  } = useCarousel<HTMLOListElement>()
 
   return (
-    <div className={cn('relative', className)}>
-      <ol
-        id={listId}
-        ref={ref}
-        tabIndex={0}
-        aria-label={label}
-        {...dragHandlers}
-        className={cn(
-          // relative: as posições dos cards (offsetLeft) são medidas a partir da lista
-          'edge-fade-mask relative grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-          isDragging ? 'cursor-grabbing' : 'cursor-grab',
-          // Largura do esmaecimento em cada ponta: aparece só onde ainda há conteúdo
-          canScrollStart ? '[--edge-fade-start:clamp(16px,3vw,40px)]' : '[--edge-fade-start:0px]',
-          canScrollEnd ? '[--edge-fade-end:clamp(16px,3vw,40px)]' : '[--edge-fade-end:0px]',
-          listClassName,
-        )}
-      >
-        {children}
-      </ol>
+    <div className={className}>
+      <div className="relative">
+        <ol
+          id={listId}
+          ref={ref}
+          tabIndex={0}
+          aria-label={label}
+          {...dragHandlers}
+          className={cn(
+            // relative: as posições dos cards (offsetLeft) são medidas a partir da lista
+            'edge-fade-mask relative grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            isDragging ? 'cursor-grabbing' : 'cursor-grab',
+            // Largura do esmaecimento em cada ponta: aparece só onde ainda há conteúdo
+            canScrollStart ? '[--edge-fade-start:clamp(16px,3vw,40px)]' : '[--edge-fade-start:0px]',
+            canScrollEnd ? '[--edge-fade-end:clamp(16px,3vw,40px)]' : '[--edge-fade-end:0px]',
+            listClassName,
+          )}
+        >
+          {children}
+        </ol>
 
-      <ScrollArrow
-        side="start"
-        visible={canScrollStart}
-        controls={listId}
-        onClick={() => scrollByPage(-1)}
-      />
-      <ScrollArrow
-        side="end"
-        visible={canScrollEnd}
-        controls={listId}
-        onClick={() => scrollByPage(1)}
-      />
+        <ScrollArrow
+          side="start"
+          visible={canScrollStart}
+          controls={listId}
+          onClick={() => scrollByPage(-1)}
+        />
+        <ScrollArrow
+          side="end"
+          visible={canScrollEnd}
+          controls={listId}
+          onClick={() => scrollByPage(1)}
+        />
+      </div>
+
+      <CarouselDots count={stops} active={activeIndex} controls={listId} onSelect={scrollToIndex} />
+    </div>
+  )
+}
+
+interface CarouselDotsProps {
+  count: number
+  active: number
+  controls: string
+  onSelect: (index: number) => void
+}
+
+/** Bolinhas de posição: a ativa vira uma pílula; clicar leva até aquele card */
+function CarouselDots({ count, active, controls, onSelect }: CarouselDotsProps) {
+  if (count <= 1) return null
+  return (
+    <div className="mt-2 flex justify-center gap-1" aria-label="Posição no carrossel">
+      {Array.from({ length: count }, (_, index) => {
+        const isActive = index === active
+        return (
+          <button
+            key={index}
+            type="button"
+            aria-controls={controls}
+            aria-current={isActive}
+            aria-label={`Ir para a posição ${index + 1} de ${count}`}
+            onClick={() => onSelect(index)}
+            // Área de clique maior que a bolinha
+            className="group grid h-6 cursor-pointer place-items-center px-1"
+          >
+            <span
+              className={cn(
+                'block h-2.5 rounded-full bg-ink transition-[width,opacity] duration-300 ease-out',
+                isActive ? 'w-7 opacity-100' : 'w-2.5 opacity-30 group-hover:opacity-60',
+              )}
+            />
+          </button>
+        )
+      })}
     </div>
   )
 }
