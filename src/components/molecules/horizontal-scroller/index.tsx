@@ -1,7 +1,7 @@
 import { useId, type ReactNode } from 'react'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
 
-import { useScrollEdges } from '@/hooks/use-scroll-edges'
+import { useCarousel } from '@/hooks/use-carousel'
 import { cn } from '@/lib/cn'
 
 export interface HorizontalScrollerProps {
@@ -16,8 +16,11 @@ export interface HorizontalScrollerProps {
 
 /**
  * Lista com rolagem horizontal no estilo do layout da marca: sem barra de rolagem visível, com o
- * conteúdo esmaecendo nas pontas que ainda têm mais itens e setas "»" para avançar.
- * Continua rolável por toque, trackpad e teclado (a lista recebe foco).
+ * conteúdo esmaecendo nas pontas que ainda têm mais itens e setas "»" que avançam uma página de
+ * cards inteiros. Com o mouse dá para arrastar; toque, trackpad e teclado usam a rolagem nativa.
+ *
+ * Para nenhum card ficar cortado, a lista deve ter colunas que caibam inteiras na largura
+ * (veja o TimelineSection).
  */
 export function HorizontalScroller({
   label,
@@ -26,7 +29,8 @@ export function HorizontalScroller({
   className,
 }: HorizontalScrollerProps) {
   const listId = useId()
-  const { ref, canScrollStart, canScrollEnd, scrollByPage } = useScrollEdges<HTMLOListElement>()
+  const { ref, canScrollStart, canScrollEnd, isDragging, scrollByPage, dragHandlers } =
+    useCarousel<HTMLOListElement>()
 
   return (
     <div className={cn('relative', className)}>
@@ -35,11 +39,14 @@ export function HorizontalScroller({
         ref={ref}
         tabIndex={0}
         aria-label={label}
+        {...dragHandlers}
         className={cn(
-          'edge-fade-mask grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          // relative: as posições dos cards (offsetLeft) são medidas a partir da lista
+          'edge-fade-mask relative grid snap-x snap-mandatory grid-flow-col overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          isDragging ? 'cursor-grabbing' : 'cursor-grab',
           // Largura do esmaecimento em cada ponta: aparece só onde ainda há conteúdo
-          canScrollStart ? '[--edge-fade-start:clamp(32px,9vw,120px)]' : '[--edge-fade-start:0px]',
-          canScrollEnd ? '[--edge-fade-end:clamp(32px,9vw,120px)]' : '[--edge-fade-end:0px]',
+          canScrollStart ? '[--edge-fade-start:clamp(16px,3vw,40px)]' : '[--edge-fade-start:0px]',
+          canScrollEnd ? '[--edge-fade-end:clamp(16px,3vw,40px)]' : '[--edge-fade-end:0px]',
           listClassName,
         )}
       >
@@ -83,17 +90,17 @@ function ScrollArrow({ side, visible, controls, onClick }: ScrollArrowProps) {
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       className={cn(
-        'group absolute top-[38%] grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-brand shadow-float',
+        'group absolute grid size-11 cursor-pointer place-items-center rounded-full bg-ink text-brand shadow-float md:size-12',
+        // Celular: embaixo, na altura da linha do tempo, para não cobrir o texto do card.
+        // A partir do tablet: no meio dos cards, um pouco para fora da trilha.
+        'bottom-[38px] md:top-[38%] md:bottom-auto md:-translate-y-1/2',
         'transition-[opacity,translate,scale,background-color] duration-300 ease-out',
         'hover:scale-105 hover:bg-surface-raised active:scale-95',
-        isEnd ? 'right-1 md:-right-6' : 'left-1 md:-left-6',
+        isEnd ? 'right-0 md:-right-6' : 'left-0 md:-left-6',
         // Entra deslizando a partir da ponta da lista; sai do mesmo jeito
         visible
-          ? '-translate-y-1/2 opacity-100'
-          : cn(
-              'pointer-events-none -translate-y-1/2 opacity-0',
-              isEnd ? 'translate-x-3' : '-translate-x-3',
-            ),
+          ? 'opacity-100'
+          : cn('pointer-events-none opacity-0', isEnd ? 'translate-x-3' : '-translate-x-3'),
       )}
     >
       <Icon
