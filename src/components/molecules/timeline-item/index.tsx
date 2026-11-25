@@ -2,11 +2,14 @@ import { Badge } from '@/components/atoms/badge'
 import { Heading } from '@/components/atoms/heading'
 import type { TimelineEntry } from '@/content/types'
 
-/** Card branco + ponto na linha + período, para a linha do tempo horizontal */
+/**
+ * Card branco + ponto na linha + período, para a linha do tempo horizontal.
+ * O card tem a altura do próprio conteúdo e fica encostado na linha (mt-auto), como no layout da marca.
+ */
 export function TimelineItem({ period, level, title, activities }: TimelineEntry) {
   return (
     <li className="relative flex snap-start flex-col">
-      <article className="flex-1 rounded-card bg-white px-6 pt-6 pb-[22px] text-ink shadow-card">
+      <article className="mt-auto rounded-card bg-white px-6 pt-6 pb-[22px] text-ink shadow-card">
         <Badge variant="solid" className="mb-3">
           {level}
         </Badge>

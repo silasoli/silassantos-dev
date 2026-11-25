@@ -1,4 +1,5 @@
 import { BrandBand } from '@/components/molecules/brand-band'
+import { HorizontalScroller } from '@/components/molecules/horizontal-scroller'
 import { SectionHeader } from '@/components/molecules/section-header'
 import { TimelineItem } from '@/components/molecules/timeline-item'
 import type { SectionCopy, TimelineEntry } from '@/content/types'
@@ -10,23 +11,20 @@ export interface TimelineSectionProps {
 
 export function TimelineSection({ copy, entries }: TimelineSectionProps) {
   return (
-    <BrandBand id={copy.id} shape="gentle">
+    // overflow-x-clip: a linha do tempo vaza até a borda da tela sem criar rolagem na página
+    <BrandBand id={copy.id} shape="gentle" className="overflow-x-clip">
       <SectionHeader title={copy.title} subtitle={copy.subtitle} tone="onBrand" reveal={false} />
 
-      {/* tabIndex permite rolar a linha do tempo pelo teclado (setas) */}
-      <ol
-        tabIndex={0}
-        aria-label="Linha do tempo profissional"
-        className="grid snap-x snap-mandatory auto-cols-[minmax(300px,1fr)] grid-flow-col gap-[22px] overflow-x-auto px-1 pt-1.5 pb-[110px] [scrollbar-color:var(--color-ink)_transparent] [scrollbar-width:thin]"
+      <HorizontalScroller
+        label="Linha do tempo profissional"
+        // Margem negativa à direita: a trilha vai do início do conteúdo até a borda da tela
+        className="mr-[calc((100%-100vw)/2)]"
+        listClassName="auto-cols-[minmax(280px,320px)] gap-[22px] pt-1.5 pr-[clamp(24px,6vw,96px)] pb-[110px] pl-1 scroll-pl-1"
       >
         {entries.map((entry) => (
           <TimelineItem key={`${entry.period}-${entry.level}`} {...entry} />
         ))}
-      </ol>
-
-      <p className="mt-7 flex items-center gap-1.5 text-[0.85rem] text-brand-ink">
-        Arraste para o lado para ver mais &rarr;
-      </p>
+      </HorizontalScroller>
     </BrandBand>
   )
 }
