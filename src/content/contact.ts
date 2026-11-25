@@ -24,8 +24,8 @@ export const contactChannels: ContactChannel[] = [
   {
     kind: 'whatsapp',
     label: 'WhatsApp',
-    value: '(75) 99138-3124',
-    href: 'https://wa.me/5575991383124',
+    value: '(41) 98408-9007',
+    href: 'https://wa.me/5541984089007',
     external: true,
   },
 ]

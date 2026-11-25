@@ -38,5 +38,4 @@ export const headerSocials: SocialLink[] = [
 
 export const footer = {
   owner: 'Silas Santos',
-  credit: 'Design original por Minuti Studio',
 }

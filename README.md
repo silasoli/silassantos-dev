@@ -2,7 +2,7 @@
 
 Site pessoal e portfólio de **Silas Santos**, desenvolvedor Back-End / Full Stack Sênior.
 
-Design original por **Minuti Studio**, migrado de HTML estático para React com atomic design.
+Migrado de HTML estático para React com atomic design.
 
 ## Stack
 
