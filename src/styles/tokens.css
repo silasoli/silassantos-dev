@@ -1,0 +1,78 @@
+/*
+ * Design tokens · identidade "SILAS santos .DEV"
+ *
+ * Camada mais baixa do design system: todo componente usa estas variáveis
+ * (via utilitários do Tailwind, ex.: bg-brand, text-fg-muted, rounded-card).
+ * Nada de hex solto nos componentes: se faltar uma cor, ela nasce aqui.
+ */
+@theme {
+  /* Começa do zero para não misturar a paleta padrão do Tailwind com a da marca */
+  --color-*: initial;
+  --breakpoint-*: initial;
+
+  /* ---------- Marca ---------- */
+  --color-brand: #00e600; /* verde dos logos e do README */
+  --color-brand-strong: #2eff2e; /* hover do botão primário */
+  --color-brand-deep: #00b300; /* marcadores sobre fundo branco */
+  --color-brand-ink: #173d0e; /* texto secundário sobre o verde */
+
+  /* ---------- Superfícies ---------- */
+  --color-surface: #121212; /* fundo da página */
+  --color-surface-raised: #1b1b1b; /* faixas e cards flutuantes */
+  --color-card: #202020;
+  --color-chip: #2a2a2a;
+  --color-ink: #121212; /* texto e preenchimento escuro sobre o verde */
+  --color-white: #ffffff;
+
+  /* ---------- Texto ---------- */
+  --color-fg: #f4f4f4;
+  --color-fg-soft: #d6d6d6;
+  --color-fg-muted: #a9a9a9;
+  --color-ink-soft: #333333; /* texto sobre cards brancos */
+
+  /* ---------- Linhas e bordas ---------- */
+  --color-line-subtle: #222222;
+  --color-line-ghost: #232323; /* contorno do "S" gigante */
+  --color-line: #262626;
+  --color-line-card: #2a2a2a;
+  --color-line-divider: #2c2c2c;
+  --color-line-strong: #2f2f2f;
+  --color-line-chip: #333333;
+  --color-line-tag: #3a3a3a;
+
+  /* ---------- Tipografia ---------- */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Syne', sans-serif;
+
+  /* ---------- Forma ---------- */
+  --radius-card: 22px;
+  --radius-photo: 44px;
+  --shadow-card: 0 10px 30px rgb(0 0 0 / 0.12);
+  --shadow-float: 0 18px 40px rgb(0 0 0 / 0.45);
+
+  /* ---------- Breakpoints (mesmos cortes do layout original: 760px e 980px) ---------- */
+  --breakpoint-md: 47.5625rem; /* 761px */
+  --breakpoint-lg: 61.3125rem; /* 981px */
+
+  /* ---------- Movimento ---------- */
+  --animate-pulse-ring: pulse-ring 2s infinite;
+  --animate-blink: blink 1s steps(1) infinite;
+
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 rgb(0 230 0 / 0.6);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgb(0 230 0 / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgb(0 230 0 / 0);
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
