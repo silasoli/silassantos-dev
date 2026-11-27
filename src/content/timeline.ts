@@ -79,6 +79,7 @@ export const timeline: TimelineEntry[] = [
     title: 'Desenvolvedor Full Stack',
     activities: [
       'Liderança do desenvolvimento dos projetos MeanTime e Avelloz',
+      'API do app Avelloz em Java 21 e Spring Boot 3',
       'Definições técnicas e organização das entregas',
       'Code review e acompanhamento do time',
     ],

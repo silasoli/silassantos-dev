@@ -8,8 +8,8 @@ export const stackCopy: SectionCopy = {
 }
 
 /**
- * Só o que o Silas usa (mesma lista do currículo e do README). Não adicionar: Go, ArgoCD, Java,
- * Spring Boot, Kafka, GraphQL, Express, React Native.
+ * Só o que o Silas usa (mesma lista do currículo e do README). Não adicionar: Go, ArgoCD, Kafka,
+ * GraphQL, Express, React Native. Java e Spring Boot entraram em 27/11/2026 (projeto Avelloz).
  */
 export const stackGroups: StackGroup[] = [
   {
@@ -20,6 +20,8 @@ export const stackGroups: StackGroup[] = [
       { name: 'JavaScript', icon: 'javascript-plain colored' },
       { name: 'NestJS', icon: 'nestjs-original colored' },
       { name: 'React.js', icon: 'react-original colored' },
+      { name: 'Java', icon: 'java-plain colored' },
+      { name: 'Spring Boot', icon: 'spring-original colored' },
     ],
   },
   {
