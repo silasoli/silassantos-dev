@@ -57,6 +57,7 @@ export const timeline: TimelineEntry[] = [
     title: 'Desenvolvedor Full Stack',
     activities: [
       'Microsserviços serverless na AWS',
+      'Filas e eventos com SQS e SNS, infraestrutura em Terraform',
       'BFFs com NestJS e Clean Architecture',
       'Integrações com Fiserv, FIS e Matera',
       'Interfaces em React.js com Atomic Design',
